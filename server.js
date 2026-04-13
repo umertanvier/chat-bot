@@ -1,11 +1,13 @@
 const express = require("express");
 const path = require("path");
+
 const app = express();
 
-app.use(express.static("public")); // ✅ correct folder
+// middleware
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
-// simple chatbot logic
+// chatbot logic
 function botReply(message) {
   message = message.toLowerCase();
 
@@ -24,7 +26,7 @@ function botReply(message) {
   return "I don't understand that yet 🤔";
 }
 
-// chat endpoint
+// API route
 app.post("/chat", (req, res) => {
   const userMessage = req.body.message;
   const reply = botReply(userMessage);
@@ -32,11 +34,14 @@ app.post("/chat", (req, res) => {
   res.json({ reply });
 });
 
-// ✅ FIX: serve frontend properly
+// frontend route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+// 🔥 IMPORTANT: Azure compatible port
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server started on port " + PORT);
 });
