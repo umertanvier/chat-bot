@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Azure Chatbot</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f4f4f4;
+    }
+
+    #chatBox {
+      width: 400px;
+      margin: auto;
+      margin-top: 50px;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    #messages {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    input {
+      width: 70%;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🤖 My Azure Chatbot</h2>
+
+<div id="chatBox">
+  <div id="messages"></div>
+  <input id="input" placeholder="Type message..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+async function sendMessage() {
+  let input = document.getElementById("input");
+  let msg = input.value;
+
+  if (!msg) return;
+
+  document.getElementById("messages").innerHTML +=
+    "<p><b>You:</b> " + msg + "</p>";
+
+  let res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: msg })
+  });
+
+  let data = await res.json();
+
+  document.getElementById("messages").innerHTML +=
+    "<p><b>Bot:</b> " + data.reply + "</p>";
+
+  input.value = "";
+}
+</script>
+
+</body>
+</html>
