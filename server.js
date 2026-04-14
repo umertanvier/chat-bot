@@ -3,9 +3,15 @@ const path = require("path");
 
 const app = express();
 
+// 🔥 Azure port fix
+const PORT = process.env.PORT || 8080;
+
 // middleware
-app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+// 🔥 debug log
+console.log("APP STARTING...");
 
 // chatbot logic
 function botReply(message) {
@@ -39,9 +45,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 🔥 IMPORTANT: Azure compatible port
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server started on port " + PORT);
+// start server (IMPORTANT for Azure)
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server running on port " + PORT);
 });
